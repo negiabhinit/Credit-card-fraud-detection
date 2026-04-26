@@ -1,0 +1,144 @@
+# Credit Card Fraud Detection - Project Configuration
+# ================================================
+
+project:
+  name: "Credit Card Fraud Detection"
+  version: "1.0.0"
+  description: "Batch prediction system for credit card fraud detection using ML"
+  author: "ML Team"
+
+# Data Configuration
+data:
+  # Dataset source: Kaggle Credit Card Fraud Detection
+  # URL: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+  source: "kaggle"
+  
+  # Local paths
+  raw_data_path: "data/raw/creditcard.csv"
+  processed_data_path: "data/processed/"
+  
+  # Feature columns (Time and Amount will be added, V1-V28 are PCA transformed)
+  features:
+    - "V1" - "V28"  # PCA features
+    - "Time"        # Seconds elapsed between this transaction and the first transaction
+    - "Amount"      # Transaction amount
+  
+  target: "Class"  # 0 = legitimate, 1 = fraud
+  
+# Data Splitting
+split:
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  random_state: 42
+  stratified: true
+
+# Model Configuration
+model:
+  type: "ensemble"  # Options: random_forest, xgboost, logistic_regression, ensemble
+  
+  # Random Forest parameters
+  random_forest:
+    n_estimators: 100
+    max_depth: 10
+    min_samples_split: 5
+    min_samples_leaf: 2
+    class_weight: "balanced"  # Handle imbalanced data
+    random_state: 42
+    n_jobs: -1
+
+  # XGBoost parameters
+  xgboost:
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    scale_pos_weight: 1  # Will be adjusted based on imbalance ratio
+    random_state: 42
+
+  # Ensemble configuration
+  ensemble:
+    voting: "soft"
+    weights: [1, 2]  # [RF, XGB] - more weight to XGB
+
+# Training Configuration
+training:
+  n_folds: 5  # For cross-validation
+  cv_strategy: "stratified"
+  
+  # Hyperparameter tuning
+  tuning:
+    enabled: true
+    n_trials: 20
+    metric: "PR-AUC"  # Precision-Recall AUC - better for imbalanced data
+    timeout: 600  # seconds
+  
+  # Metrics to track
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1"
+    - "roc_auc"
+    - "pr_auc"
+    - "average_precision"
+
+# Evaluation Configuration
+evaluation:
+  # Business metrics
+  business_metrics:
+    fraud_catch_rate: 0.8  # Want to catch at least 80% of fraud
+    false_alarm_rate: 0.1  # Maximum 10% false alarms
+  
+  # Threshold optimization
+  threshold:
+    default: 0.5
+    optimize_for: "f1"  # or "recall", "precision", "business_metric"
+
+# Deployment Configuration
+deployment:
+  mode: "batch"  # Batch prediction
+  
+  # Batch prediction settings
+  batch:
+    chunk_size: 10000  # Process in chunks for memory efficiency
+    output_format: "csv"  # csv, parquet, json
+    
+  # Model export
+  export:
+    format: "joblib"  # joblib, pickle, onnx
+    path: "models/"
+
+# Monitoring Configuration
+monitoring:
+  # Drift detection
+  drift:
+    enabled: true
+    threshold: 0.05  # 5% drift triggers alert
+    
+  # Data quality checks
+  quality:
+    check_missing: true
+    check_duplicates: true
+    check_outliers: true
+    
+  # Performance monitoring
+  performance:
+    track_inference_time: true
+    track_predictions: true
+    alert_threshold: 0.05  # Alert if performance drops by 5%
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  mlflow_tracking_uri: "./mlruns"
+  experiment_name: "fraud_detection_v1"
+
+# Paths
+paths:
+  models: "models/"
+  checkpoints: "models/checkpoints/"
+  reports: "reports/"
+  visualizations: "reports/figures/"
+  metrics: "reports/metrics/"
+  logs: "logs/"
