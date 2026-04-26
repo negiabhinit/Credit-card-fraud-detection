@@ -1,0 +1,66 @@
+# Data files (large datasets)
+data/raw/
+data/processed/
+*.csv
+*.parquet
+
+# Model files (binary)
+models/*.joblib
+models/*.h5
+models/*.pt
+models/*.pth
+
+# Trained weights
+*.weights.h5
+
+# Reports
+reports/*.json
+reports/*.csv
+reports/figures/
+
+# Logs
+logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# ML experiments (mlflow, tensorboard)
+mlruns/
+tensorboard_logs/
+*.tb
+
+# Kaggle
+kaggle.json
+
+# Environment
+.env
+.env.local
+
+# Temp
+tmp/
+temp/
+*.tmp
