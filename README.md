@@ -183,3 +183,75 @@ MIT License
 
 Dataset: Machine Learning Group - ULB
 - https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+
+## 🌐 API & Web Interface
+
+A FastAPI backend and a browser frontend let you use the trained model through a web interface.
+
+### 1. Install API dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Start the API server
+```bash
+python run_api.py
+# options: --host, --port, --reload, --threshold
+# e.g. FRAUD_THRESHOLD=0.6 python run_api.py --reload
+```
+The model (`models/fraud_detector_model.joblib`) and preprocessor (`models/preprocessor.joblib`) load automatically on startup.
+
+### 3. Open the web interface
+- **UI**: http://127.0.0.1:8000/ui
+- **Interactive API docs (Swagger)**: http://127.0.0.1:8000/docs
+- **OpenAPI schema**: http://127.0.0.1:8000/openapi.json
+
+### 4. API endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/` | API info |
+| GET | `/health` | Health check (model loaded?) |
+| GET | `/model-info` | Model type, features, threshold, metrics |
+| POST | `/predict` | Score a single transaction (JSON body) |
+| POST | `/predict/batch` | Score many transactions from an uploaded CSV |
+| GET | `/predictions/{file}` | Download a batch predictions CSV |
+
+### Example: single prediction via curl
+```bash
+curl -X POST http://127.0.0.1:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"Time": 69808, "Amount": 540, "V1": 0.1362, ..., "V28": 0.1381}'
+```
+Response includes `is_fraud`, `fraud_probability`, `risk_level` (Low/Medium/High/Critical), and the `threshold` used.
+
+### Frontend features
+- Single-transaction form with all 30 inputs (Time, Amount, V1–V28)
+- "Load legitimate / fraud sample" buttons for quick testing
+- Adjustable decision threshold with a fraud-risk gauge
+- Batch CSV upload with results table and downloadable predictions CSV
+
+### 📸 UI Screenshots
+
+Save screenshots to `docs/screenshots/` and reference them here:
+
+| Screen | File | Description |
+|--------|------|-------------|
+| Home page | `docs/screenshots/home.png` | Landing page with API status bar and single-transaction form |
+| Fraud detection result | `docs/screenshots/prediction-fraud.png` | Result card showing a fraud detection (high-risk badge + gauge) |
+| Legitimate result | `docs/screenshots/prediction-legit.png` | Result card showing a legitimate transaction (low-risk badge + gauge) |
+| Batch prediction | `docs/screenshots/batch.png` | Batch CSV upload with results table and download link |
+
+#### Home page
+
+![Fraud Detection UI — Home page](./docs/screenshots/home.png)
+
+The UI shows:
+- **API status bar** — indicates whether the backend model is loaded
+- **Single-transaction form** — all 30 inputs (Time, Amount, V1–V28)
+- **Sample buttons** — load a legitimate or fraud sample transaction
+- **Decision threshold slider** — adjustable cutoff for fraud classification
+- **Prediction result card** — fraud probability %, risk gauge, risk level, threshold, and features used
+- **Batch prediction (CSV)** — upload a CSV with `Time, Amount, V1…V28` columns to score many transactions at once, with a downloadable results CSV
+
+To add your own screenshots, save them as PNG files in `docs/screenshots/` using the filenames above.
+

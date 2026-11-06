@@ -17,10 +17,16 @@ optuna>=3.3.0
 joblib>=1.3.0
 pyyaml>=6.0
 
+# API (new)
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.6
+
 # Testing
 pytest>=7.4.0
 pytest-cov>=4.1.0
 pytest-mock>=3.11.0
+httpx>=0.25.0
 
 # Code Quality
 black>=23.7.0

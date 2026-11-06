@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fraud Detection — Credit Card Transaction Classifier</title>
+  <link rel="stylesheet" href="/web/style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🛡️ Fraud Detection</h1>
+      <p class="subtitle">Credit Card Fraud Detection — ML-powered transaction classifier</p>
+      <div class="status-bar" id="statusBar">
+        <span class="dot" id="statusDot"></span>
+        <span id="statusText">Connecting to API…</span>
+      </div>
+    </header>
+
+    <!-- Single transaction -->
+    <section class="card" id="singleCard">
+      <h2>Single Transaction</h2>
+      <p class="hint">Enter transaction details to get a fraud probability instantly.</p>
+
+      <div class="controls-row">
+        <div class="preset-buttons">
+          <button type="button" class="btn btn-outline" onclick="loadSample('legit')">Load legitimate sample</button>
+          <button type="button" class="btn btn-outline" onclick="loadSample('fraud')">Load fraud sample</button>
+          <button type="button" class="btn btn-outline" onclick="resetForm()">Reset</button>
+        </div>
+        <div class="threshold-row">
+          <label>Decision threshold</label>
+          <input type="range" id="threshold" min="0" max="1" step="0.01" value="0.5" />
+          <span id="thresholdVal">0.50</span>
+        </div>
+      </div>
+
+      <form id="txnForm" class="feature-grid">
+        <div class="field">
+          <label>Time (seconds since first txn)</label>
+          <input type="number" name="Time" id="Time" step="any" value="0" />
+        </div>
+        <div class="field">
+          <label>Amount</label>
+          <input type="number" name="Amount" id="Amount" step="any" value="0" min="0" />
+        </div>
+        <div class="v-features" id="vFeatures"></div>
+      </form>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" id="predictBtn" onclick="predictSingle()">Predict Fraud</button>
+      </div>
+    </section>
+
+    <!-- Result -->
+    <section class="card result-card" id="resultCard" style="display:none;">
+      <h2>Prediction Result</h2>
+      <div class="result-grid">
+        <div class="gauge-wrap">
+          <div class="gauge" id="gauge">
+            <span class="gauge-value" id="gaugeValue">—</span>
+          </div>
+          <div class="gauge-label" id="gaugeLabel">—</div>
+        </div>
+        <div class="verdict">
+          <div class="badge" id="verdictBadge">—</div>
+          <div class="big-number" id="probability">—</div>
+          <div class="risk" id="riskText">Risk level: —</div>
+          <div class="meta" id="metaText">Threshold: — · Features used: —</div>
+        </div>
+      </div>
+      <div class="explanation" id="explanation"></div>
+    </section>
+
+    <!-- Batch -->
+    <section class="card" id="batchCard">
+      <h2>Batch Prediction (CSV)</h2>
+      <p class="hint">Upload a CSV with columns <code>Time, Amount, V1…V28</code> to score many transactions.</p>
+      <div class="batch-controls">
+        <input type="file" id="batchFile" accept=".csv" />
+        <button type="button" class="btn btn-primary" onclick="predictBatch()">Predict Batch</button>
+        <a id="downloadLink" class="btn btn-outline" style="display:none;">Download predictions CSV</a>
+      </div>
+      <div id="batchSummary" class="summary" style="display:none;"></div>
+      <div id="batchResults" class="table-wrap" style="display:none;"></div>
+    </section>
+  </div>
+
+  <script src="/web/app.js"></script>
+</body>
+</html>
