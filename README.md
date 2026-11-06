@@ -243,7 +243,7 @@ Save screenshots to `docs/screenshots/` and reference them here:
 
 #### Home page
 
-![Fraud Detection UI — Home page](./docs/screenshots/home.png)
+Save a screenshot of the home page as `docs/screenshots/home.png` to embed it here.
 
 The UI shows:
 - **API status bar** — indicates whether the backend model is loaded
